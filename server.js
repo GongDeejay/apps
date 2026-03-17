@@ -32,6 +32,46 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
+  // ── API: GET /api/geo ── 解析访客 IP 归属地
+  if (url === '/api/geo' && req.method === 'GET') {
+    // 获取真实 IP（考虑反向代理）
+    const clientIp = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '')
+      .split(',')[0].trim().replace('::ffff:', '');
+
+    // 本地/内网 IP 直接返回
+    if (!clientIp || clientIp === '127.0.0.1' || clientIp.startsWith('192.168') || clientIp.startsWith('10.')) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ city: '本地', region: '', country: '' }));
+      return;
+    }
+
+    // 调用 ip-api.com 免费 API（无需 key，每分钟 45 次限额）
+    const geoUrl = `http://ip-api.com/json/${clientIp}?lang=zh-CN&fields=status,city,regionName,country`;
+    http.get(geoUrl, (apiRes) => {
+      let raw = '';
+      apiRes.on('data', c => raw += c);
+      apiRes.on('end', () => {
+        try {
+          const geo = JSON.parse(raw);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            city:    geo.city    || '',
+            region:  geo.regionName || '',
+            country: geo.country || '',
+            ip:      clientIp,
+          }));
+        } catch {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ city: '', region: '', country: '' }));
+        }
+      });
+    }).on('error', () => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ city: '', region: '', country: '' }));
+    });
+    return;
+  }
+
   // ── API: GET /api/data ──
   if (url === '/api/data' && req.method === 'GET') {
     const data = fs.readFileSync(DATA_FILE, 'utf8');

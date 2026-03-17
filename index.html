@@ -597,6 +597,34 @@
     /* ── Password hint ── */
     .pwd-hint { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
 
+    /* ── Welcome Bar ── */
+    .welcome-bar {
+      text-align: center;
+      padding: 12px 24px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+      letter-spacing: 0.01em;
+      min-height: 40px;
+    }
+    .welcome-bar .location {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .welcome-bar .wave {
+      display: inline-block;
+      animation: wave 1.8s ease-in-out infinite;
+      transform-origin: 70% 70%;
+    }
+    @keyframes wave {
+      0%, 60%, 100% { transform: rotate(0deg); }
+      10%, 30%      { transform: rotate(18deg); }
+      20%           { transform: rotate(-10deg); }
+      40%           { transform: rotate(12deg); }
+      50%           { transform: rotate(-5deg); }
+    }
+
     /* ── Toast ── */
     .toast {
       position: fixed;
@@ -763,6 +791,11 @@
       <button class="btn btn-ghost" onclick="closeModal('tagModal')">关闭</button>
     </div>
   </div>
+</div>
+
+<!-- ── Welcome Bar ── -->
+<div class="welcome-bar" id="welcomeBar">
+  <span id="welcomeText">正在加载...</span>
 </div>
 
 <!-- ── Toast ── -->
@@ -1169,10 +1202,37 @@ for (var _i = 0; _i < overlays.length; _i++) {
   })(overlays[_i]);
 }
 
+// ═══════════════════════════════════════════
+//  IP 地理位置欢迎信息
+// ═══════════════════════════════════════════
+async function loadWelcome() {
+  var el = document.getElementById('welcomeText');
+  try {
+    var r = await fetch('/api/geo');
+    if (!r.ok) throw new Error('geo error');
+    var geo = await r.json();
+
+    var parts = [];
+    if (geo.city)    parts.push(geo.city);
+    if (geo.region && geo.region !== geo.city) parts.push(geo.region);
+    if (geo.country) parts.push(geo.country);
+    var location = parts.join('·');
+
+    if (location) {
+      el.innerHTML = '<span class="wave">👋</span> 欢迎来自 <span class="location">' + esc(location) + '</span> 的朋友！';
+    } else {
+      el.innerHTML = '<span class="wave">👋</span> 欢迎来访！';
+    }
+  } catch (e) {
+    el.innerHTML = '<span class="wave">👋</span> 欢迎来访！';
+  }
+}
+
 // ── Init ──
 (async function() {
   await loadData();
   render();
+  loadWelcome();
 })();
 </script>
 </body>
