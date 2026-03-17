@@ -28,3 +28,4 @@ node server.js
 | `server.js`  | Node.js 后端（静态服务 + /api/data 接口） |
 | `data.json`  | 数据存储文件（勿删） |
 | `package.json` | 项目配置 |
+# 自动部署测试 Tue Mar 17 17:01:51 CST 2026
