@@ -1,0 +1,9 @@
+{
+  "name": "mmsite",
+  "version": "1.0.0",
+  "description": "M+M小站 - 极简收藏夹",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

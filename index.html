@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a73e8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>M+M 小站</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:      #ffffff;
+      --text:    #202124;
+      --accent:  #1a73e8;
+      --muted:   #5f6368;
+      --border:  #e8eaed;
+      --card-bg: #f8f9fa;
+      --danger:  #d93025;
+      --radius:  12px;
+      --shadow:  0 2px 12px rgba(0,0,0,.10);
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue",
+                   Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      /* iOS 安全区域 */
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-bottom: constant(safe-area-inset-bottom);
+    }
+
+    /* ── Header ── */
+    header {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+      /* iOS 安全区域 */
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+    }
+
+    .logo {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: -0.5px;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+    }
+    .logo-name { font-size: 17px; font-weight: 600; color: var(--text); }
+    .logo-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .header-actions {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      -webkit-transition: background .15s, color .15s, opacity .15s;
+      transition: background .15s, color .15s, opacity .15s;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+    .btn:active { opacity: .8; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-ghost   { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { background: var(--card-bg); color: var(--text); }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      -webkit-transition: color .15s, border-color .15s;
+      transition: color .15s, border-color .15s;
+      background: none;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+    }
+    .tab:hover { color: var(--accent); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+    .tab-count {
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 10px;
+      background: var(--card-bg);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .tab.active .tab-count { background: #e8f0fe; color: var(--accent); }
+
+    /* ── Main ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px;
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+    }
+
+    .section-header {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title { font-size: 15px; font-weight: 500; color: var(--muted); }
+
+    /* ── Grid ── */
+    .grid {
+      display: -ms-grid;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── Card ── */
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: var(--bg);
+      -webkit-transition: -webkit-box-shadow .2s, -webkit-transform .2s;
+      transition: box-shadow .2s, transform .2s;
+      position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      gap: 10px;
+      /* fix Safari overflow */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    .card:hover {
+      -webkit-box-shadow: var(--shadow);
+      box-shadow: var(--shadow);
+      -webkit-transform: translateY(-2px);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: flex-start;
+      -ms-flex-align: flex-start;
+      align-items: flex-start;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+
+    /* 图标容器 */
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      font-size: 24px;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      line-height: 1;
+      /* 防止 emoji 在不同系统渲染宽度不一致 */
+      font-variant-emoji: text;
+    }
+
+    .card-actions {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+      -webkit-transition: opacity .15s;
+      transition: opacity .15s;
+    }
+    /* 移动端始终显示操作按钮 */
+    @media (hover: none) {
+      .card-actions { opacity: 1; }
+    }
+    .card:hover .card-actions { opacity: 1; }
+
+    .icon-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      background: transparent;
+      color: var(--muted);
+      -webkit-transition: background .15s, color .15s;
+      transition: background .15s, color .15s;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+    .icon-btn:hover       { background: var(--card-bg); color: var(--text); }
+    .icon-btn.del:hover   { background: #fce8e6; color: var(--danger); }
+    .icon-btn:active      { opacity: .7; }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      /* Firefox fallback */
+      max-height: 4em;
+    }
+    .card-link {
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      margin-top: auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card-link:hover { text-decoration: underline; }
+
+    /* ── Empty ── */
+    .empty {
+      text-align: center;
+      padding: 72px 24px;
+      color: var(--muted);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .empty-icon { font-size: 48px; opacity: .35; line-height: 1; }
+    .empty-text { font-size: 16px; color: var(--text); }
+    .empty-sub  { font-size: 14px; }
+
+    /* ── Overlay & Modal ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      top: 0; left: 0; right: 0; bottom: 0; /* fallback */
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      display: none;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+      /* iOS 安全区域 */
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+    .overlay.open {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      -webkit-box-shadow: 0 8px 40px rgba(0,0,0,.15);
+      box-shadow: 0 8px 40px rgba(0,0,0,.15);
+      -webkit-animation: fadeUp .2s ease;
+      animation: fadeUp .2s ease;
+      /* fix Safari border-radius clip */
+      -webkit-mask-image: -webkit-radial-gradient(white, black);
+    }
+    @-webkit-keyframes fadeUp {
+      from { opacity:0; -webkit-transform:translateY(14px); transform:translateY(14px); }
+      to   { opacity:1; -webkit-transform:translateY(0);    transform:translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-transition: border-color .15s;
+      transition: border-color .15s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      /* fix iOS zoom on focus */
+      font-size: max(16px, 14px);
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 72px;
+      font-size: 14px;
+    }
+    .form-error {
+      font-size: 12px;
+      color: var(--danger);
+      margin-top: 4px;
+      display: none;
+    }
+    .form-error.show { display: block; }
+
+    .modal-actions {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      gap: 8px;
+      -webkit-box-pack: end;
+      -ms-flex-pack: end;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* ── 图标选择器 ── */
+    .icon-picker-label {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .icon-preview {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      font-size: 24px;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+    }
+    .icon-grid {
+      display: -ms-grid;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card-bg);
+    }
+    .icon-item {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      -webkit-transition: border-color .12s, background .12s;
+      transition: border-color .12s, background .12s;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 8px;
+      line-height: 1;
+    }
+    .icon-item:hover   { background: var(--bg); }
+    .icon-item.selected { border-color: var(--accent); background: #e8f0fe; }
+
+    /* ── Tag modal list ── */
+    .tag-item {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    /* ── Password hint ── */
+    .pwd-hint { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      bottom: calc(24px + constant(safe-area-inset-bottom));
+      left: 50%;
+      -webkit-transform: translateX(-50%) translateY(8px);
+      transform: translateX(-50%) translateY(8px);
+      background: #303134;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      -webkit-transition: opacity .2s, -webkit-transform .2s;
+      transition: opacity .2s, transform .2s;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      -webkit-transform: translateX(-50%) translateY(0);
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header { padding: 0 16px; height: 56px; }
+      .logo-sub { display: none; }
+      main { padding: 16px; }
+      .tabs { padding: 0 16px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+      .modal { padding: 20px 18px; }
+      .icon-grid { grid-template-columns: repeat(7, 1fr); }
+    }
+
+    @media (max-width: 360px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .icon-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">M+M</div>
+    <div>
+      <div class="logo-name">M+M 小站</div>
+      <div class="logo-sub">两位PK小朋友 Work &amp; Play</div>
+    </div>
+  </a>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" onclick="openManageTags()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      标签
+    </button>
+    <button class="btn btn-primary btn-sm" onclick="openAddLink()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      添加
+    </button>
+  </div>
+</header>
+
+<!-- ── Tabs ── -->
+<div class="tabs" id="tabsBar" role="tablist"></div>
+
+<!-- ── Main ── -->
+<main>
+  <div class="section-header">
+    <div class="section-title" id="sectionTitle"></div>
+  </div>
+  <div class="grid" id="cardGrid" role="list"></div>
+  <div class="empty" id="emptyState" style="display:none" aria-live="polite">
+    <div class="empty-icon">🔖</div>
+    <div class="empty-text">还没有收藏</div>
+    <div class="empty-sub">点击右上角「添加」开始收藏吧</div>
+  </div>
+</main>
+
+<!-- ── 添加/编辑链接 Modal ── -->
+<div class="overlay" id="linkModal" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
+  <div class="modal">
+    <div class="modal-title" id="linkModalTitle">添加链接</div>
+
+    <div class="form-group">
+      <label class="form-label" for="linkUrl">链接地址 *</label>
+      <input class="form-input" id="linkUrl" type="url"
+             inputmode="url" autocomplete="url" autocorrect="off"
+             autocapitalize="none" spellcheck="false"
+             placeholder="https://..." />
+      <div class="form-error" id="urlError" role="alert">请输入有效的链接地址</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="linkName">名称 *</label>
+      <input class="form-input" id="linkName" type="text"
+             autocomplete="off" autocorrect="off"
+             placeholder="应用名称" />
+      <div class="form-error" id="nameError" role="alert">请输入名称</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="linkDesc">描述（选填）</label>
+      <textarea class="form-textarea" id="linkDesc"
+                autocorrect="off" spellcheck="false"
+                placeholder="简单描述一下..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="linkTag">标签 *</label>
+      <select class="form-select" id="linkTag"></select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">图标</label>
+      <div class="icon-picker-label">
+        <div class="icon-preview" id="iconPreview">🔗</div>
+        <span style="font-size:13px;color:var(--muted)">点击下方选择，或保持随机</span>
+      </div>
+      <div class="icon-grid" id="iconGrid"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('linkModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveLink()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 密码验证 Modal ── -->
+<div class="overlay" id="pwdModal" role="dialog" aria-modal="true" aria-labelledby="pwdModalTitle">
+  <div class="modal">
+    <div class="modal-title" id="pwdModalTitle">验证密码</div>
+    <p class="pwd-hint">修改内容需要输入管理密码</p>
+    <div class="form-group">
+      <input class="form-input" id="pwdInput" type="password"
+             autocomplete="current-password" placeholder="请输入密码"
+             onkeydown="if(event.key==='Enter')verifyPwd()" />
+      <div class="form-error" id="pwdError" role="alert">密码错误，请重试</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('pwdModal')">取消</button>
+      <button class="btn btn-primary" onclick="verifyPwd()">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 管理标签 Modal ── -->
+<div class="overlay" id="tagModal" role="dialog" aria-modal="true" aria-labelledby="tagModalTitle">
+  <div class="modal">
+    <div class="modal-title" id="tagModalTitle">管理标签</div>
+    <div id="tagList" style="margin-bottom:14px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;gap:8px;"></div>
+    <div style="display:-webkit-box;display:-ms-flexbox;display:flex;gap:8px;">
+      <input class="form-input" id="newTagName" placeholder="新标签名称"
+             autocomplete="off" autocorrect="off"
+             onkeydown="if(event.key==='Enter')addTag()" />
+      <button class="btn btn-primary" style="-ms-flex-negative:0;flex-shrink:0" onclick="addTag()">添加</button>
+    </div>
+    <div class="form-error" id="tagError" style="margin-top:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('tagModal')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ── -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  图标库 — 按类别分组，共 80 个
+// ═══════════════════════════════════════════
+const ICON_SETS = {
+  应用: ['📊','📈','📉','🗂','📋','📌','📎','✂️','🔍','🔎','💡','🛠','⚙️','🔧','🔨','💻','🖥','🖨','⌨️','🖱','📱','📲','📡','🔐','🔑','🗝','🏷','📦','🚀','💬','📧','📨','📩','📪','📫','💾','💿','📀','🖼','🎨'],
+  游戏: ['🎮','🕹','🎯','🎲','🎳','🎰','🃏','🀄','🧩','🎭','🏆','🥇','🥈','🥉','🎖','🏅','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🥋','🎿','🛷'],
+  通用: ['🌟','⭐','💫','✨','🔥','💥','🌈','🎁','🎀','🎊','🎉','🎈','💎','👑','🦁','🦊','🐉','🦄','🍀','🌺','🍎','🍕','☕','🍵','🌍','🌏','🏠','🏢','🏖','🗺'],
+};
+const ALL_ICONS = [...ICON_SETS['应用'], ...ICON_SETS['游戏'], ...ICON_SETS['通用']];
+
+function randomIcon() {
+  return ALL_ICONS[Math.floor(Math.random() * ALL_ICONS.length)];
+}
+
+// ═══════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════
+const API      = '/api';
+const PASSWORD = 'kingsoft';
+
+let state = { tags: [], links: [], activeTag: '__all__' };
+let pendingAction  = null;
+let editingLinkId  = null;
+let selectedIcon   = null;   // null = 随机
+
+// ═══════════════════════════════════════════
+//  Data I/O
+// ═══════════════════════════════════════════
+async function loadData() {
+  try {
+    const r = await fetch(API + '/data');
+    if (!r.ok) throw new Error('server error');
+    const d = await r.json();
+    state.tags  = Array.isArray(d.tags)  ? d.tags  : defaultTags();
+    state.links = Array.isArray(d.links) ? d.links : [];
+  } catch {
+    const saved = localStorage.getItem('mmsite_v2');
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        state.tags  = d.tags  || defaultTags();
+        state.links = d.links || [];
+        return;
+      } catch {}
+    }
+    state.tags  = defaultTags();
+    state.links = [];
+  }
+}
+
+async function saveData() {
+  const payload = { tags: state.tags, links: state.links };
+  try {
+    const r = await fetch(API + '/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!r.ok) throw new Error('save failed');
+  } catch {
+    localStorage.setItem('mmsite_v2', JSON.stringify(payload));
+  }
+}
+
+function defaultTags() {
+  return [{ id: 'app', name: '应用' }, { id: 'game', name: '游戏' }];
+}
+
+// ═══════════════════════════════════════════
+//  Render
+// ═══════════════════════════════════════════
+function render() {
+  renderTabs();
+  renderCards();
+}
+
+function renderTabs() {
+  const bar = document.getElementById('tabsBar');
+  const activeTag = state.activeTag;
+  let html = buildTab('__all__', '全部', state.links.length, activeTag);
+  for (const t of state.tags) {
+    const cnt = state.links.filter(function(l){ return l.tag === t.id; }).length;
+    html += buildTab(t.id, t.name, cnt, activeTag);
+  }
+  bar.innerHTML = html;
+
+  const label = activeTag === '__all__' ? '全部 ' + state.links.length + ' 个'
+    : ((state.tags.find(function(t){ return t.id === activeTag; }) || {}).name || '') +
+      ' ' + state.links.filter(function(l){ return l.tag === activeTag; }).length + ' 个';
+  document.getElementById('sectionTitle').textContent = label;
+}
+
+function buildTab(id, name, count, active) {
+  const isActive = id === active;
+  return '<button class="tab' + (isActive ? ' active' : '') + '"' +
+    ' role="tab" aria-selected="' + isActive + '"' +
+    ' onclick="setTab(\'' + id + '\')">' +
+    esc(name) +
+    '<span class="tab-count">' + count + '</span>' +
+    '</button>';
+}
+
+function renderCards() {
+  const filtered = state.activeTag === '__all__'
+    ? state.links
+    : state.links.filter(function(l){ return l.tag === state.activeTag; });
+
+  const grid  = document.getElementById('cardGrid');
+  const empty = document.getElementById('emptyState');
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(function(link) {
+    const icon    = link.icon || '🔗';
+    const tagName = (state.tags.find(function(t){ return t.id === link.tag; }) || {}).name || '';
+    const bgColor = iconBg(link.tag);
+    return '<div class="card" role="listitem">' +
+      '<div class="card-top">' +
+        '<div class="card-icon" style="background:' + bgColor + '" aria-hidden="true">' + icon + '</div>' +
+        '<div class="card-actions">' +
+          '<button class="icon-btn" title="编辑" aria-label="编辑 ' + esc(link.name) + '" onclick="askEdit(\'' + link.id + '\')">' + svgEdit() + '</button>' +
+          '<button class="icon-btn del" title="删除" aria-label="删除 ' + esc(link.name) + '" onclick="askDelete(\'' + link.id + '\')">' + svgTrash() + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-name" title="' + esc(link.name) + '">' + esc(link.name) + '</div>' +
+      (link.desc ? '<div class="card-desc">' + esc(link.desc) + '</div>' : '') +
+      '<a class="card-link" href="' + esc(link.url) + '" target="_blank" rel="noopener noreferrer">' +
+        svgExternal() + '打开' +
+      '</a>' +
+    '</div>';
+  }).join('');
+}
+
+// 根据标签给图标背景上色
+function iconBg(tagId) {
+  const palettes = {
+    'app':  '#e8f0fe',
+    'game': '#fce8e6',
+  };
+  // 其余标签按 id hash 选色
+  const extras = ['#e6f4ea','#fef7e0','#f3e8fd','#e8f5e9','#fff3e0'];
+  if (palettes[tagId]) return palettes[tagId];
+  let h = 0;
+  for (let i = 0; i < tagId.length; i++) h = (h * 31 + tagId.charCodeAt(i)) >>> 0;
+  return extras[h % extras.length];
+}
+
+function setTab(id) {
+  state.activeTag = id;
+  render();
+}
+
+// ═══════════════════════════════════════════
+//  图标选择器
+// ═══════════════════════════════════════════
+function buildIconGrid() {
+  const grid = document.getElementById('iconGrid');
+  grid.innerHTML = ALL_ICONS.map(function(ic) {
+    return '<div class="icon-item' + (ic === selectedIcon ? ' selected' : '') + '"' +
+      ' onclick="selectIcon(\'' + ic + '\')" title="' + ic + '" role="button" tabindex="0">' +
+      ic + '</div>';
+  }).join('');
+}
+
+function selectIcon(ic) {
+  selectedIcon = ic;
+  document.getElementById('iconPreview').textContent = ic;
+  // update grid selection
+  var items = document.querySelectorAll('.icon-item');
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.toggle('selected', ALL_ICONS[i] === ic);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Password Gate
+// ═══════════════════════════════════════════
+function requirePassword(fn, args) {
+  pendingAction = { fn: fn, args: args || [] };
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('pwdError').classList.remove('show');
+  document.getElementById('pwdModal').classList.add('open');
+  setTimeout(function(){ document.getElementById('pwdInput').focus(); }, 150);
+}
+
+function verifyPwd() {
+  if (document.getElementById('pwdInput').value === PASSWORD) {
+    closeModal('pwdModal');
+    if (pendingAction) {
+      pendingAction.fn.apply(null, pendingAction.args);
+      pendingAction = null;
+    }
+  } else {
+    document.getElementById('pwdError').classList.add('show');
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('pwdInput').focus();
+  }
+}
+
+// ═══════════════════════════════════════════
+//  Add / Edit Link
+// ═══════════════════════════════════════════
+function openAddLink()  { requirePassword(_openAddLink); }
+function askEdit(id)    { requirePassword(_openEditLink, [id]); }
+function askDelete(id)  { requirePassword(_deleteLink,   [id]); }
+
+function _openAddLink() {
+  editingLinkId = null;
+  selectedIcon  = null;
+  document.getElementById('linkModalTitle').textContent = '添加链接';
+  document.getElementById('linkUrl').value  = '';
+  document.getElementById('linkName').value = '';
+  document.getElementById('linkDesc').value = '';
+  document.getElementById('urlError').classList.remove('show');
+  document.getElementById('nameError').classList.remove('show');
+  // 显示随机图标预览
+  var preview = randomIcon();
+  document.getElementById('iconPreview').textContent = preview;
+  populateTagSelect(null);
+  buildIconGrid();
+  document.getElementById('linkModal').classList.add('open');
+  setTimeout(function(){ document.getElementById('linkUrl').focus(); }, 150);
+}
+
+function _openEditLink(id) {
+  var link = state.links.find(function(l){ return l.id === id; });
+  if (!link) return;
+  editingLinkId = id;
+  selectedIcon  = link.icon || null;
+  document.getElementById('linkModalTitle').textContent = '编辑链接';
+  document.getElementById('linkUrl').value  = link.url;
+  document.getElementById('linkName').value = link.name;
+  document.getElementById('linkDesc').value = link.desc || '';
+  document.getElementById('urlError').classList.remove('show');
+  document.getElementById('nameError').classList.remove('show');
+  document.getElementById('iconPreview').textContent = link.icon || '🔗';
+  populateTagSelect(link.tag);
+  buildIconGrid();
+  document.getElementById('linkModal').classList.add('open');
+}
+
+function populateTagSelect(selected) {
+  var sel = document.getElementById('linkTag');
+  sel.innerHTML = state.tags.map(function(t) {
+    return '<option value="' + esc(t.id) + '"' + (t.id === selected ? ' selected' : '') + '>' + esc(t.name) + '</option>';
+  }).join('');
+}
+
+async function saveLink() {
+  var url  = document.getElementById('linkUrl').value.trim();
+  var name = document.getElementById('linkName').value.trim();
+  var desc = document.getElementById('linkDesc').value.trim();
+  var tag  = document.getElementById('linkTag').value;
+
+  var ok = true;
+  if (!url || !isValidUrl(url)) {
+    document.getElementById('urlError').classList.add('show'); ok = false;
+  } else { document.getElementById('urlError').classList.remove('show'); }
+  if (!name) {
+    document.getElementById('nameError').classList.add('show'); ok = false;
+  } else { document.getElementById('nameError').classList.remove('show'); }
+  if (!ok) return;
+
+  // 确定图标：用户选择 > 随机
+  var icon = selectedIcon || randomIcon();
+
+  if (editingLinkId) {
+    var idx = state.links.findIndex(function(l){ return l.id === editingLinkId; });
+    if (idx > -1) state.links[idx] = Object.assign({}, state.links[idx], { url: url, name: name, desc: desc, tag: tag, icon: icon });
+  } else {
+    state.links.push({ id: uid(), url: url, name: name, desc: desc, tag: tag, icon: icon, createdAt: Date.now() });
+  }
+
+  await saveData();
+  closeModal('linkModal');
+  render();
+  showToast(editingLinkId ? '✅ 已更新' : '✅ 已添加');
+}
+
+function isValidUrl(s) {
+  try { new URL(s); return true; } catch { return false; }
+}
+
+// ═══════════════════════════════════════════
+//  Delete
+// ═══════════════════════════════════════════
+async function _deleteLink(id) {
+  state.links = state.links.filter(function(l){ return l.id !== id; });
+  await saveData();
+  render();
+  showToast('🗑 已删除');
+}
+
+// ═══════════════════════════════════════════
+//  Manage Tags
+// ═══════════════════════════════════════════
+function openManageTags() { requirePassword(_openManageTags); }
+
+function _openManageTags() {
+  renderTagList();
+  document.getElementById('newTagName').value = '';
+  document.getElementById('tagError').classList.remove('show');
+  document.getElementById('tagModal').classList.add('open');
+}
+
+function renderTagList() {
+  var list = document.getElementById('tagList');
+  if (!state.tags.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px">暂无标签</div>';
+    return;
+  }
+  list.innerHTML = state.tags.map(function(t) {
+    var cnt = state.links.filter(function(l){ return l.tag === t.id; }).length;
+    return '<div class="tag-item">' +
+      '<span style="flex:1;font-size:14px">' + esc(t.name) + '</span>' +
+      '<span style="font-size:12px;color:var(--muted)">' + cnt + ' 个</span>' +
+      '<button class="icon-btn del" aria-label="删除标签 ' + esc(t.name) + '" onclick="deleteTag(\'' + t.id + '\')">' + svgClose() + '</button>' +
+    '</div>';
+  }).join('');
+}
+
+async function addTag() {
+  var name  = document.getElementById('newTagName').value.trim();
+  var errEl = document.getElementById('tagError');
+  if (!name) { errEl.textContent = '请输入标签名称'; errEl.classList.add('show'); return; }
+  if (state.tags.find(function(t){ return t.name === name; })) { errEl.textContent = '标签已存在'; errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+  state.tags.push({ id: uid(), name: name });
+  document.getElementById('newTagName').value = '';
+  await saveData();
+  renderTagList();
+  render();
+}
+
+async function deleteTag(id) {
+  var tag = state.tags.find(function(t){ return t.id === id; });
+  var cnt = state.links.filter(function(l){ return l.tag === id; }).length;
+  if (cnt > 0 && !confirm('标签「' + (tag ? tag.name : '') + '」下有 ' + cnt + ' 个链接，删除后将移至第一个标签，确认？')) return;
+  state.tags = state.tags.filter(function(t){ return t.id !== id; });
+  var fallback = state.tags.length ? state.tags[0].id : '';
+  state.links = state.links.map(function(l){ return l.tag === id ? Object.assign({}, l, { tag: fallback }) : l; });
+  if (state.activeTag === id) state.activeTag = '__all__';
+  await saveData();
+  renderTagList();
+  render();
+}
+
+// ═══════════════════════════════════════════
+//  Utilities
+// ═══════════════════════════════════════════
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
+
+function uid() {
+  return Math.random().toString(36).slice(2,9) + Date.now().toString(36);
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// SVG helpers
+function svgEdit() {
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+}
+function svgTrash() {
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
+}
+function svgExternal() {
+  return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+}
+function svgClose() {
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+}
+
+// Close on overlay click
+var overlays = document.querySelectorAll('.overlay');
+for (var _i = 0; _i < overlays.length; _i++) {
+  (function(el) {
+    el.addEventListener('click', function(e) {
+      if (e.target === el) closeModal(el.id);
+    });
+  })(overlays[_i]);
+}
+
+// ── Init ──
+(async function() {
+  await loadData();
+  render();
+})();
+</script>
+</body>
+</html>
