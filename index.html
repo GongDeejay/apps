@@ -239,6 +239,8 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 14px;
+      /* ensure grid doesn't overflow on narrow screens */
+      min-width: 0;
     }
 
     /* ── Card ── */
@@ -419,11 +421,41 @@
       -webkit-overflow-scrolling: touch;
       /* iOS 安全区域 */
       padding-bottom: max(16px, env(safe-area-inset-bottom));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
     }
     .overlay.open {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
+    }
+
+    /* On small screens, modals slide up from the bottom */
+    @media (max-width: 480px) {
+      .overlay {
+        -webkit-box-align: flex-end;
+        -ms-flex-align: flex-end;
+        align-items: flex-end;
+        padding: 0;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .modal {
+        max-width: 100%;
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        max-height: 92vh;
+        max-height: 92dvh;
+        -webkit-animation: slideUp .25s ease;
+        animation: slideUp .25s ease;
+      }
+    }
+    @-webkit-keyframes slideUp {
+      from { -webkit-transform: translateY(100%); transform: translateY(100%); }
+      to   { -webkit-transform: translateY(0);    transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
     }
 
     .modal {
@@ -453,6 +485,19 @@
     }
 
     .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
+
+    /* Drag handle — only visible in mobile bottom-sheet mode */
+    .modal-drag-handle {
+      display: none;
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      margin: 0 auto 16px;
+    }
+    @media (max-width: 480px) {
+      .modal-drag-handle { display: block; }
+    }
 
     /* ── Form ── */
     .form-group { margin-bottom: 14px; }
@@ -652,19 +697,71 @@
     }
 
     /* ── Responsive ── */
-    @media (max-width: 640px) {
-      header { padding: 0 16px; height: 56px; }
-      .logo-sub { display: none; }
-      main { padding: 16px; }
-      .tabs { padding: 0 16px; }
-      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
-      .modal { padding: 20px 18px; }
-      .icon-grid { grid-template-columns: repeat(7, 1fr); }
+
+    /* Tablet & small laptop (641px – 1024px) */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      main { max-width: 100%; padding: 20px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
     }
 
-    @media (max-width: 360px) {
-      .grid { grid-template-columns: 1fr 1fr; }
+    /* Large desktop (≥ 1440px) */
+    @media (min-width: 1440px) {
+      main { max-width: 1320px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    }
+
+    /* Mobile (≤ 640px) */
+    @media (max-width: 640px) {
+      header { padding: 0 16px; height: 56px; }
+      header { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+      .logo-sub { display: none; }
+      .btn-sm { padding: 6px 10px; font-size: 13px; }
+      main { padding: 12px 16px; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+      .tabs { padding: 0 16px; padding-left: max(16px, env(safe-area-inset-left)); }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+      .card { padding: 14px; }
+      .card-icon { width: 38px; height: 38px; font-size: 20px; }
+      .modal { padding: 20px 16px; border-radius: 14px; }
+      .modal-title { font-size: 16px; }
+      .icon-grid { grid-template-columns: repeat(7, 1fr); }
+      .welcome-bar { padding: 10px 16px; font-size: 12px; }
+    }
+
+    /* Small mobile (≤ 390px) */
+    @media (max-width: 390px) {
+      .logo-name { font-size: 15px; }
+      .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .card { padding: 12px; }
+      .card-name { font-size: 13px; }
+      .card-desc { font-size: 12px; }
       .icon-grid { grid-template-columns: repeat(6, 1fr); }
+      .tab { padding: 12px 12px; font-size: 13px; }
+    }
+
+    /* Very small mobile (≤ 320px) */
+    @media (max-width: 320px) {
+      header { height: 50px; }
+      .logo-icon { width: 30px; height: 30px; font-size: 11px; }
+      .grid { grid-template-columns: 1fr; }
+      .icon-grid { grid-template-columns: repeat(5, 1fr); }
+      .btn { padding: 6px 10px; font-size: 12px; }
+    }
+
+    /* Landscape mobile (short height) */
+    @media (max-height: 500px) and (orientation: landscape) {
+      header { height: 48px; }
+      .modal { max-height: 95vh; max-height: 95dvh; padding: 14px 16px; }
+      .modal-title { margin-bottom: 10px; }
+      .form-group { margin-bottom: 8px; }
+      .icon-grid { max-height: 100px; }
+    }
+
+    /* Touch devices: always show card actions */
+    @media (hover: none) and (pointer: coarse) {
+      .card-actions { opacity: 1; }
+      .btn:hover { background: initial; }
+      .btn-primary:hover { background: var(--accent); }
+      .icon-item:hover { background: transparent; }
     }
   </style>
 </head>
@@ -710,6 +807,7 @@
 <!-- ── 添加/编辑链接 Modal ── -->
 <div class="overlay" id="linkModal" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
   <div class="modal">
+    <div class="modal-drag-handle" aria-hidden="true"></div>
     <div class="modal-title" id="linkModalTitle">添加链接</div>
 
     <div class="form-group">
@@ -760,6 +858,7 @@
 <!-- ── 密码验证 Modal ── -->
 <div class="overlay" id="pwdModal" role="dialog" aria-modal="true" aria-labelledby="pwdModalTitle">
   <div class="modal">
+    <div class="modal-drag-handle" aria-hidden="true"></div>
     <div class="modal-title" id="pwdModalTitle">验证密码</div>
     <p class="pwd-hint">修改内容需要输入管理密码</p>
     <div class="form-group">
@@ -778,6 +877,7 @@
 <!-- ── 管理标签 Modal ── -->
 <div class="overlay" id="tagModal" role="dialog" aria-modal="true" aria-labelledby="tagModalTitle">
   <div class="modal">
+    <div class="modal-drag-handle" aria-hidden="true"></div>
     <div class="modal-title" id="tagModalTitle">管理标签</div>
     <div id="tagList" style="margin-bottom:14px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;gap:8px;"></div>
     <div style="display:-webkit-box;display:-ms-flexbox;display:flex;gap:8px;">
@@ -820,7 +920,7 @@ function randomIcon() {
 //  State
 // ═══════════════════════════════════════════
 const API      = '/api';
-const PASSWORD = 'kingsoft';
+const PASSWORD = '915714';
 
 let state = { tags: [], links: [], activeTag: '__all__' };
 let pendingAction  = null;
